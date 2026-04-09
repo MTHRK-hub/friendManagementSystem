@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>友達一覧</title>
+  <title>現場管理システム</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -19,6 +19,8 @@
       --danger: #f07178;
       --radius: 12px;
       --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * {
@@ -35,7 +37,7 @@
       background: radial-gradient(ellipse 120% 80% at 50% -20%, #1e2840 0%, var(--bg) 55%);
       color: var(--text);
       min-height: 100dvh;
-      padding: 24px;
+      padding: calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
     }
 
     .app {
@@ -54,27 +56,34 @@
     .card {
       background: var(--surface);
       border-radius: calc(var(--radius) + 6px);
-      padding: 28px;
+      padding: 22px;
       box-shadow: var(--shadow);
       border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    @media (min-width: 480px) {
+      .card {
+        padding: 28px;
+      }
     }
 
     /* SCR-01 */
     .login-wrap {
       max-width: 400px;
-      margin: 10vh auto 0;
+      margin: 8vh auto 0;
     }
 
     .login-wrap h1 {
       text-align: center;
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 600;
-      margin: 0 0 28px;
-      letter-spacing: 0.04em;
+      margin: 0 0 24px;
+      letter-spacing: 0.03em;
+      line-height: 1.35;
     }
 
     .field {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .field label {
@@ -86,7 +95,8 @@
 
     .field input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 14px 14px;
+      min-height: 48px;
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: var(--bg);
@@ -101,15 +111,19 @@
     }
 
     .login-actions {
-      margin-top: 24px;
-      text-align: center;
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: stretch;
     }
 
     .btn {
       font-family: inherit;
       font-size: 0.95rem;
       font-weight: 600;
-      padding: 12px 24px;
+      padding: 14px 22px;
+      min-height: 48px;
       border-radius: var(--radius);
       border: none;
       cursor: pointer;
@@ -125,10 +139,35 @@
       background: var(--accent-hover);
     }
 
+    .btn-secondary {
+      background: var(--surface-raised);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-back {
+      background: var(--surface-raised);
+      color: var(--text);
+      padding: 10px 12px;
+      min-height: 44px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
     .btn-ghost {
       background: transparent;
       color: var(--text-muted);
-      padding: 8px 14px;
+      padding: 10px 14px;
+      min-height: 44px;
       font-size: 0.875rem;
     }
 
@@ -139,7 +178,8 @@
     .btn-detail {
       background: var(--surface-raised);
       color: var(--accent);
-      padding: 8px 16px;
+      padding: 10px 16px;
+      min-height: 44px;
       font-size: 0.85rem;
     }
 
@@ -155,37 +195,106 @@
       min-height: 1.4em;
     }
 
-    /* SCR-02 header */
-    .list-header {
-      display: flex;
+    /* Headers */
+    .page-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .list-header h1 {
-      font-size: 1.25rem;
+    .page-header h1 {
+      font-size: 1.05rem;
       font-weight: 600;
       margin: 0;
+      text-align: center;
+      grid-column: 2;
+    }
+
+    .page-header .header-left {
+      grid-column: 1;
+      justify-self: start;
+    }
+
+    .page-header .header-right {
+      grid-column: 3;
+      justify-self: end;
+    }
+
+    .page-header.menu-header h1 {
+      grid-column: 1 / -1;
+      text-align: left;
+      padding-right: 100px;
+    }
+
+    .page-header.menu-header .header-right {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+    }
+
+    @media (min-width: 480px) {
+      .page-header.menu-header .header-right {
+        top: 28px;
+        right: 28px;
+      }
+    }
+
+    .menu-card-wrap {
+      position: relative;
+    }
+
+    .menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .menu-link {
+      display: block;
+      width: 100%;
+      padding: 18px 20px;
+      min-height: 52px;
+      text-align: center;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .menu-link:hover,
+    .menu-link:focus-visible {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(61, 158, 255, 0.08);
     }
 
     .table-wrap {
       overflow-x: auto;
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.06);
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     thead th {
       text-align: left;
-      padding: 12px 14px;
+      padding: 12px 12px;
       background: var(--bg);
       color: var(--text-muted);
       font-weight: 500;
@@ -193,43 +302,15 @@
     }
 
     tbody td {
-      padding: 12px 14px;
+      padding: 12px 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    tbody tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
+    tbody tr:active td {
+      background: rgba(255, 255, 255, 0.03);
     }
 
-    /* SCR-03 */
-    .detail-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .detail-header h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin: 0;
-      flex: 1;
-      text-align: center;
-    }
-
-    .btn-back {
-      background: var(--surface-raised);
-      color: var(--text);
-      padding: 10px 16px;
-      font-size: 0.875rem;
-    }
-
-    .btn-back:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
+    /* SCR-05 detail */
     .detail-rows {
       display: grid;
       gap: 14px;
@@ -237,7 +318,7 @@
 
     .detail-row {
       display: grid;
-      grid-template-columns: 100px 1fr;
+      grid-template-columns: 88px 1fr;
       gap: 12px;
       align-items: baseline;
       font-size: 0.95rem;
@@ -259,18 +340,24 @@
         gap: 4px;
       }
     }
+
+    .spacer-header {
+      width: 1px;
+      height: 44px;
+      visibility: hidden;
+    }
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- SCR-01 -->
+    <!-- SCR-01 ログイン -->
     <section id="screen-login" class="screen" aria-hidden="true">
       <div class="card login-wrap">
-        <h1>友達一覧</h1>
+        <h1>現場管理システム</h1>
         <form id="login-form" novalidate>
           <div class="field">
             <label for="login-id">ID</label>
-            <input id="login-id" name="id" type="text" autocomplete="username" />
+            <input id="login-id" name="id" type="text" autocomplete="username" inputmode="text" />
           </div>
           <div class="field">
             <label for="login-password">パスワード</label>
@@ -278,18 +365,40 @@
           </div>
           <div class="login-actions">
             <button type="submit" class="btn btn-primary">ログイン</button>
+            <button type="button" id="btn-close-login" class="btn btn-secondary">閉じる</button>
           </div>
         </form>
         <p id="login-error" class="error-msg" role="alert"></p>
       </div>
     </section>
 
-    <!-- SCR-02 -->
-    <section id="screen-list" class="screen" aria-hidden="true">
+    <!-- SCR-02 メニュー -->
+    <section id="screen-menu" class="screen" aria-hidden="true">
+      <div class="card menu-card-wrap">
+        <div class="page-header menu-header">
+          <h1>現場管理システム</h1>
+          <div class="header-right">
+            <button type="button" id="btn-logout-menu" class="btn btn-ghost">ログアウト</button>
+          </div>
+        </div>
+        <nav class="menu-links" aria-label="メインメニュー">
+          <a href="#" id="link-friends" class="menu-link">友達一覧</a>
+          <a href="#" id="link-memos" class="menu-link">現場メモ</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- SCR-03 友達一覧 -->
+    <section id="screen-friends" class="screen" aria-hidden="true">
       <div class="card">
-        <div class="list-header">
+        <div class="page-header">
+          <div class="header-left">
+            <button type="button" id="btn-friends-to-menu" class="btn btn-back">メニューへ戻る</button>
+          </div>
           <h1>友達一覧</h1>
-          <button type="button" id="btn-logout" class="btn btn-ghost">ログアウト</button>
+          <div class="header-right">
+            <button type="button" id="btn-logout-friends" class="btn btn-ghost">ログアウト</button>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -297,7 +406,7 @@
               <tr>
                 <th>名前</th>
                 <th>LINE名</th>
-                <th>誕生日</th>
+                <th>年齢</th>
                 <th>性別</th>
                 <th>職業</th>
                 <th>詳細</th>
@@ -309,13 +418,42 @@
       </div>
     </section>
 
-    <!-- SCR-03 -->
-    <section id="screen-detail" class="screen" aria-hidden="true">
+    <!-- SCR-04 現場メモ一覧 -->
+    <section id="screen-memos" class="screen" aria-hidden="true">
       <div class="card">
-        <div class="detail-header">
-          <button type="button" id="btn-back" class="btn btn-back" aria-label="戻る">← 戻る</button>
+        <div class="page-header">
+          <div class="header-left">
+            <button type="button" id="btn-memos-to-menu" class="btn btn-back">メニューへ戻る</button>
+          </div>
+          <h1>現場メモ</h1>
+          <div class="header-right">
+            <button type="button" id="btn-logout-memos" class="btn btn-ghost">ログアウト</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>項目</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody id="memo-list-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCR-05 友達詳細 -->
+    <section id="screen-friend-detail" class="screen" aria-hidden="true">
+      <div class="card">
+        <div class="page-header">
+          <div class="header-left">
+            <button type="button" id="btn-detail-to-menu" class="btn btn-back">メニューへ戻る</button>
+          </div>
           <h1>友達詳細</h1>
-          <span style="width: 88px; flex-shrink: 0;" aria-hidden="true"></span>
+          <span class="header-right spacer-header" aria-hidden="true"></span>
         </div>
         <dl class="detail-rows" id="detail-content"></dl>
       </div>
@@ -330,7 +468,7 @@
         id: 1,
         name: "山田 太郎",
         lineName: "taro_y",
-        birthday: "1995-08-15",
+        age: 30,
         gender: "男",
         occupation: "エンジニア"
       },
@@ -338,7 +476,7 @@
         id: 2,
         name: "佐藤 花子",
         lineName: "hanako_s",
-        birthday: "1998-03-22",
+        age: 27,
         gender: "女",
         occupation: "デザイナー"
       },
@@ -346,7 +484,7 @@
         id: 3,
         name: "鈴木 一郎",
         lineName: "ichi_szk",
-        birthday: "1992-11-03",
+        age: 34,
         gender: "男",
         occupation: "営業"
       },
@@ -354,7 +492,7 @@
         id: 4,
         name: "高橋 美咲",
         lineName: "misaki_t",
-        birthday: "2000-07-28",
+        age: 25,
         gender: "女",
         occupation: "看護師"
       },
@@ -362,9 +500,36 @@
         id: 5,
         name: "伊藤 健",
         lineName: "ken_i",
-        birthday: "1996-01-10",
+        age: 29,
         gender: "その他",
         occupation: "公務員"
+      }
+    ];
+
+    const memos = [
+      {
+        id: 1,
+        date: "2026-04-01",
+        category: "つくる",
+        detail: "現場の安全確認チェックリストを作成。"
+      },
+      {
+        id: 2,
+        date: "2026-04-05",
+        category: "1:1",
+        detail: "担当者と進捗と課題を共有。"
+      },
+      {
+        id: 3,
+        date: "2026-04-08",
+        category: "商談",
+        detail: "次回提案内容のすり合わせ。"
+      },
+      {
+        id: 4,
+        date: "2026-04-10",
+        category: "つくる",
+        detail: "作業手順書のドラフトレビュー。"
       }
     ];
 
@@ -374,24 +539,19 @@
 
     const screens = {
       login: document.getElementById("screen-login"),
-      list: document.getElementById("screen-list"),
-      detail: document.getElementById("screen-detail")
+      menu: document.getElementById("screen-menu"),
+      friends: document.getElementById("screen-friends"),
+      memos: document.getElementById("screen-memos"),
+      friendDetail: document.getElementById("screen-friend-detail")
     };
 
     const loginForm = document.getElementById("login-form");
     const loginError = document.getElementById("login-error");
     const friendListBody = document.getElementById("friend-list-body");
+    const memoListBody = document.getElementById("memo-list-body");
     const detailContent = document.getElementById("detail-content");
 
-    function formatBirthday(dateStr) {
-      const d = new Date(dateStr + "T12:00:00");
-      if (Number.isNaN(d.getTime())) return "";
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      return `${mm}/${dd}`;
-    }
-
-    function formatBirthdayFull(dateStr) {
+    function formatDate(dateStr) {
       const d = new Date(dateStr + "T12:00:00");
       if (Number.isNaN(d.getTime())) return dateStr;
       const y = d.getFullYear();
@@ -409,6 +569,16 @@
       });
     }
 
+    function goToMenu() {
+      showScreen("menu");
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement("div");
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
     function renderFriendList() {
       friendListBody.innerHTML = "";
       friends.forEach((f) => {
@@ -416,7 +586,7 @@
         tr.innerHTML = `
           <td>${escapeHtml(f.name)}</td>
           <td>${escapeHtml(f.lineName)}</td>
-          <td>${escapeHtml(formatBirthday(f.birthday))}</td>
+          <td>${escapeHtml(String(f.age))}歳</td>
           <td>${escapeHtml(f.gender)}</td>
           <td>${escapeHtml(f.occupation)}</td>
           <td><button type="button" class="btn btn-detail" data-friend-id="${f.id}">詳細</button></td>
@@ -426,29 +596,41 @@
       friendListBody.querySelectorAll("[data-friend-id]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const id = Number(btn.getAttribute("data-friend-id"));
-          showDetail(id);
+          showFriendDetail(id);
         });
       });
     }
 
-    function escapeHtml(s) {
-      const div = document.createElement("div");
-      div.textContent = s;
-      return div.innerHTML;
-    }
-
-    function showDetail(friendId) {
+    function showFriendDetail(friendId) {
       const friend = friends.find((f) => f.id === friendId);
       if (!friend) return;
       selectedFriend = friend;
       detailContent.innerHTML = `
         <div class="detail-row"><dt>名前</dt><dd>${escapeHtml(friend.name)}</dd></div>
         <div class="detail-row"><dt>LINE名</dt><dd>${escapeHtml(friend.lineName)}</dd></div>
-        <div class="detail-row"><dt>誕生日</dt><dd>${escapeHtml(formatBirthdayFull(friend.birthday))}</dd></div>
+        <div class="detail-row"><dt>年齢</dt><dd>${escapeHtml(String(friend.age))}</dd></div>
         <div class="detail-row"><dt>性別</dt><dd>${escapeHtml(friend.gender)}</dd></div>
         <div class="detail-row"><dt>職業</dt><dd>${escapeHtml(friend.occupation)}</dd></div>
       `;
-      showScreen("detail");
+      showScreen("friendDetail");
+    }
+
+    function renderMemoList() {
+      memoListBody.innerHTML = "";
+      memos.forEach((m) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(formatDate(m.date))}</td>
+          <td>${escapeHtml(m.category)}</td>
+          <td><button type="button" class="btn btn-detail" data-memo-id="${m.id}">詳細</button></td>
+        `;
+        memoListBody.appendChild(tr);
+      });
+      memoListBody.querySelectorAll("[data-memo-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          window.alert("メモ詳細の表示は将来実装予定です。");
+        });
+      });
     }
 
     function login() {
@@ -471,8 +653,7 @@
       isLoggedIn = true;
       idInput.value = "";
       pwInput.value = "";
-      renderFriendList();
-      showScreen("list");
+      goToMenu();
     }
 
     function logout() {
@@ -482,17 +663,54 @@
       showScreen("login");
     }
 
+    function resetLoginForm() {
+      document.getElementById("login-id").value = "";
+      document.getElementById("login-password").value = "";
+      loginError.textContent = "";
+    }
+
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
       login();
     });
 
-    document.getElementById("btn-logout").addEventListener("click", () => {
-      logout();
+    document.getElementById("btn-close-login").addEventListener("click", () => {
+      resetLoginForm();
+      try {
+        window.close();
+      } catch (_) {
+        /* noop */
+      }
     });
 
-    document.getElementById("btn-back").addEventListener("click", () => {
-      showScreen("list");
+    document.getElementById("link-friends").addEventListener("click", (e) => {
+      e.preventDefault();
+      renderFriendList();
+      showScreen("friends");
+    });
+
+    document.getElementById("link-memos").addEventListener("click", (e) => {
+      e.preventDefault();
+      renderMemoList();
+      showScreen("memos");
+    });
+
+    document.getElementById("btn-friends-to-menu").addEventListener("click", () => {
+      goToMenu();
+    });
+
+    document.getElementById("btn-memos-to-menu").addEventListener("click", () => {
+      goToMenu();
+    });
+
+    document.getElementById("btn-detail-to-menu").addEventListener("click", () => {
+      goToMenu();
+    });
+
+    ["btn-logout-menu", "btn-logout-friends", "btn-logout-memos"].forEach((id) => {
+      document.getElementById(id).addEventListener("click", () => {
+        logout();
+      });
     });
 
     showScreen("login");
