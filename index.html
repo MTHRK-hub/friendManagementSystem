@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>友達一覧</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1218;
+      --surface: #1a1f2a;
+      --surface-raised: #242b38;
+      --text: #e8ecf4;
+      --text-muted: #8b95a8;
+      --accent: #3d9eff;
+      --accent-hover: #5aadff;
+      --danger: #f07178;
+      --radius: 12px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      font-family: "Outfit", system-ui, sans-serif;
+      background: radial-gradient(ellipse 120% 80% at 50% -20%, #1e2840 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100dvh;
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.is-active {
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: calc(var(--radius) + 6px);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* SCR-01 */
+    .login-wrap {
+      max-width: 400px;
+      margin: 10vh auto 0;
+    }
+
+    .login-wrap h1 {
+      text-align: center;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 28px;
+      letter-spacing: 0.04em;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .login-actions {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0c10;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 8px 14px;
+      font-size: 0.875rem;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+    }
+
+    .btn-detail {
+      background: var(--surface-raised);
+      color: var(--accent);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    .btn-detail:hover {
+      background: rgba(61, 158, 255, 0.15);
+    }
+
+    .error-msg {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--danger);
+      min-height: 1.4em;
+    }
+
+    /* SCR-02 header */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .list-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 12px 14px;
+      background: var(--bg);
+      color: var(--text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    tbody tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* SCR-03 */
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .detail-header h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-back {
+      background: var(--surface-raised);
+      color: var(--text);
+      padding: 10px 16px;
+      font-size: 0.875rem;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .detail-rows {
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 0.95rem;
+    }
+
+    .detail-row dt {
+      margin: 0;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .detail-row dd {
+      margin: 0;
+    }
+
+    @media (max-width: 520px) {
+      .detail-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SCR-01 -->
+    <section id="screen-login" class="screen" aria-hidden="true">
+      <div class="card login-wrap">
+        <h1>友達一覧</h1>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="login-id">ID</label>
+            <input id="login-id" name="id" type="text" autocomplete="username" />
+          </div>
+          <div class="field">
+            <label for="login-password">パスワード</label>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" />
+          </div>
+          <div class="login-actions">
+            <button type="submit" class="btn btn-primary">ログイン</button>
+          </div>
+        </form>
+        <p id="login-error" class="error-msg" role="alert"></p>
+      </div>
+    </section>
+
+    <!-- SCR-02 -->
+    <section id="screen-list" class="screen" aria-hidden="true">
+      <div class="card">
+        <div class="list-header">
+          <h1>友達一覧</h1>
+          <button type="button" id="btn-logout" class="btn btn-ghost">ログアウト</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>名前</th>
+                <th>LINE名</th>
+                <th>誕生日</th>
+                <th>性別</th>
+                <th>職業</th>
+                <th>詳細</th>
+              </tr>
+            </thead>
+            <tbody id="friend-list-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCR-03 -->
+    <section id="screen-detail" class="screen" aria-hidden="true">
+      <div class="card">
+        <div class="detail-header">
+          <button type="button" id="btn-back" class="btn btn-back" aria-label="戻る">← 戻る</button>
+          <h1>友達詳細</h1>
+          <span style="width: 88px; flex-shrink: 0;" aria-hidden="true"></span>
+        </div>
+        <dl class="detail-rows" id="detail-content"></dl>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const AUTH = { id: "user", password: "user" };
+
+    const friends = [
+      {
+        id: 1,
+        name: "山田 太郎",
+        lineName: "taro_y",
+        birthday: "1995-08-15",
+        gender: "男",
+        occupation: "エンジニア"
+      },
+      {
+        id: 2,
+        name: "佐藤 花子",
+        lineName: "hanako_s",
+        birthday: "1998-03-22",
+        gender: "女",
+        occupation: "デザイナー"
+      },
+      {
+        id: 3,
+        name: "鈴木 一郎",
+        lineName: "ichi_szk",
+        birthday: "1992-11-03",
+        gender: "男",
+        occupation: "営業"
+      },
+      {
+        id: 4,
+        name: "高橋 美咲",
+        lineName: "misaki_t",
+        birthday: "2000-07-28",
+        gender: "女",
+        occupation: "看護師"
+      },
+      {
+        id: 5,
+        name: "伊藤 健",
+        lineName: "ken_i",
+        birthday: "1996-01-10",
+        gender: "その他",
+        occupation: "公務員"
+      }
+    ];
+
+    let isLoggedIn = false;
+    let currentScreen = "login";
+    let selectedFriend = null;
+
+    const screens = {
+      login: document.getElementById("screen-login"),
+      list: document.getElementById("screen-list"),
+      detail: document.getElementById("screen-detail")
+    };
+
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const friendListBody = document.getElementById("friend-list-body");
+    const detailContent = document.getElementById("detail-content");
+
+    function formatBirthday(dateStr) {
+      const d = new Date(dateStr + "T12:00:00");
+      if (Number.isNaN(d.getTime())) return "";
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${mm}/${dd}`;
+    }
+
+    function formatBirthdayFull(dateStr) {
+      const d = new Date(dateStr + "T12:00:00");
+      if (Number.isNaN(d.getTime())) return dateStr;
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}/${m}/${day}`;
+    }
+
+    function showScreen(screenId) {
+      currentScreen = screenId;
+      Object.entries(screens).forEach(([id, el]) => {
+        const active = id === screenId;
+        el.classList.toggle("is-active", active);
+        el.setAttribute("aria-hidden", active ? "false" : "true");
+      });
+    }
+
+    function renderFriendList() {
+      friendListBody.innerHTML = "";
+      friends.forEach((f) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(f.name)}</td>
+          <td>${escapeHtml(f.lineName)}</td>
+          <td>${escapeHtml(formatBirthday(f.birthday))}</td>
+          <td>${escapeHtml(f.gender)}</td>
+          <td>${escapeHtml(f.occupation)}</td>
+          <td><button type="button" class="btn btn-detail" data-friend-id="${f.id}">詳細</button></td>
+        `;
+        friendListBody.appendChild(tr);
+      });
+      friendListBody.querySelectorAll("[data-friend-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.getAttribute("data-friend-id"));
+          showDetail(id);
+        });
+      });
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement("div");
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function showDetail(friendId) {
+      const friend = friends.find((f) => f.id === friendId);
+      if (!friend) return;
+      selectedFriend = friend;
+      detailContent.innerHTML = `
+        <div class="detail-row"><dt>名前</dt><dd>${escapeHtml(friend.name)}</dd></div>
+        <div class="detail-row"><dt>LINE名</dt><dd>${escapeHtml(friend.lineName)}</dd></div>
+        <div class="detail-row"><dt>誕生日</dt><dd>${escapeHtml(formatBirthdayFull(friend.birthday))}</dd></div>
+        <div class="detail-row"><dt>性別</dt><dd>${escapeHtml(friend.gender)}</dd></div>
+        <div class="detail-row"><dt>職業</dt><dd>${escapeHtml(friend.occupation)}</dd></div>
+      `;
+      showScreen("detail");
+    }
+
+    function login() {
+      loginError.textContent = "";
+      const idInput = document.getElementById("login-id");
+      const pwInput = document.getElementById("login-password");
+      const id = idInput.value.trim();
+      const password = pwInput.value;
+
+      if (id === "" || password === "") {
+        loginError.textContent = "IDとパスワードを入力してください";
+        return;
+      }
+
+      if (id !== AUTH.id || password !== AUTH.password) {
+        loginError.textContent = "IDまたはパスワードが正しくありません";
+        return;
+      }
+
+      isLoggedIn = true;
+      idInput.value = "";
+      pwInput.value = "";
+      renderFriendList();
+      showScreen("list");
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      selectedFriend = null;
+      loginError.textContent = "";
+      showScreen("login");
+    }
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      login();
+    });
+
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      logout();
+    });
+
+    document.getElementById("btn-back").addEventListener("click", () => {
+      showScreen("list");
+    });
+
+    showScreen("login");
+  </script>
+</body>
+</html>
